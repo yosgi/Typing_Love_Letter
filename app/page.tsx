@@ -218,46 +218,33 @@ const QUESTION = "你的高中名字?";
 const CORRECT_ANSWER = "荆州中学"; 
 
 export default function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userInput, setUserInput] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
 
-  const handleSubmit = () => {
-    if (userInput.trim().toLowerCase() === CORRECT_ANSWER.toLowerCase()) {
-      setIsAuthenticated(true);
-    } else {
-      setErrorMessage("Incorrect answer, please try again.");
-    }
+  // 监听输入变化，自动验证
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.trim().toLowerCase(); // 去除空格 & 统一小写
+    setUserInput(value);
   };
 
+  // 验证答案是否正确
+  const isAuthenticated = userInput === CORRECT_ANSWER.toLowerCase();
+
+  // 如果验证成功，显示 Home 组件
   if (isAuthenticated) {
     return <Home />;
   }
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-black text-white">
-      <div className="p-6 bg-gray-800 rounded-lg shadow-lg w-96">
+      <div className="p-6 rounded-lg shadow-lg w-96" style={{ backgroundColor: "#2b2d37" }}>
         <h1 className="text-2xl font-bold mb-4 text-center">{QUESTION}</h1>
         <input
           type="text"
-          className="w-full p-2 mb-3 text-black rounded-md"
+          className="w-full p-2 text-black rounded-md"
           placeholder="请输入验证答案"
           value={userInput}
-          onChange={(e) => {
-            setUserInput(e.target.value);
-            setErrorMessage("");
-          }}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") handleSubmit();
-          }}
+          onChange={handleInputChange} // 监听用户输入
         />
-        <button
-          className="w-full bg-blue-500 hover:bg-blue-600 text-white p-2 rounded-md"
-          onClick={handleSubmit}
-        >
-          提交
-        </button>
-        {errorMessage && <p className="text-red-500 mt-2 text-center">{errorMessage}</p>}
       </div>
     </div>
   );
