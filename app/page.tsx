@@ -3,7 +3,7 @@ import { useEffect, useState, useRef } from "react";
 import { lines } from "./data";
 
 
-export default function Home() {
+function Home() {
   const scrollRef = useRef<HTMLDivElement>(null)
 
   // ========== 动画参数 ==========
@@ -208,6 +208,57 @@ export default function Home() {
         )
       }
      
+    </div>
+  );
+}
+
+
+
+const QUESTION = "你的高中名字?";
+const CORRECT_ANSWER = "荆州中学"; 
+
+export default function App() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [userInput, setUserInput] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const handleSubmit = () => {
+    if (userInput.trim().toLowerCase() === CORRECT_ANSWER.toLowerCase()) {
+      setIsAuthenticated(true);
+    } else {
+      setErrorMessage("Incorrect answer, please try again.");
+    }
+  };
+
+  if (isAuthenticated) {
+    return <Home />;
+  }
+
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-black text-white">
+      <div className="p-6 bg-gray-800 rounded-lg shadow-lg w-96">
+        <h1 className="text-2xl font-bold mb-4 text-center">{QUESTION}</h1>
+        <input
+          type="text"
+          className="w-full p-2 mb-3 text-black rounded-md"
+          placeholder="请输入验证答案"
+          value={userInput}
+          onChange={(e) => {
+            setUserInput(e.target.value);
+            setErrorMessage("");
+          }}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") handleSubmit();
+          }}
+        />
+        <button
+          className="w-full bg-blue-500 hover:bg-blue-600 text-white p-2 rounded-md"
+          onClick={handleSubmit}
+        >
+          提交
+        </button>
+        {errorMessage && <p className="text-red-500 mt-2 text-center">{errorMessage}</p>}
+      </div>
     </div>
   );
 }
