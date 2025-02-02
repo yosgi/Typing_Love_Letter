@@ -165,7 +165,7 @@ function Home() {
         phase !== "done" && (
           <div
           ref={scrollRef}
-          className="text-white text-xl leading-8 whitespace-pre-wrap overflow-y-auto max-h-[80vh] w-full px-4 border border-gray-600 rounded-md"
+          className="text-white text-xl leading-8 whitespace-pre-wrap overflow-y-auto max-h-[80vh] w-full px-4 border border-gray-600 rounded-md content"
           style={{
             padding: "16px",
             height: "80vh",

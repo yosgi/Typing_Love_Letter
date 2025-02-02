@@ -24,3 +24,7 @@ body {
   font-weight: normal;
   font-style: normal;
 }
+
+.content {
+  user-select: none;
+}
