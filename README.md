@@ -19,7 +19,7 @@ hello world
 ## Installation & Deployment
 ### 1. Clone the repository
 ```bash
-git clone https://github.com/your-repo/typing-love-letter.git
+git clone git@github.com:yosgi/Typing_Love_Letter.git
 cd typing-love-letter
 ```
 

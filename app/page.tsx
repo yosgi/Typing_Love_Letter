@@ -220,7 +220,7 @@ export default function App() {
 
   // deal with user input
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value.trim().toLowerCase(); // 去除空格 & 统一小写
+    const value = e.target.value
     setUserInput(value);
   };
 
