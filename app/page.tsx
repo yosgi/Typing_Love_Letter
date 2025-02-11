@@ -225,7 +225,7 @@ export default function App() {
   };
 
   // verify user input
-  const isAuthenticated = userInput === CORRECT_ANSWER.toLowerCase();
+  const isAuthenticated = userInput.toLowerCase() === CORRECT_ANSWER.toLowerCase();
 
   // if user input is correct, show the home page
   if (isAuthenticated) {
