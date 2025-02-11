@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Letter from a friend",
-  description: "A letter from a friend",
+  title: "✨ Love's Silent Whisper ✨",
+  description: "The silence often of pure innocence persuades, when speaking fails.",
 };
 
 export default function RootLayout({
