@@ -2,28 +2,30 @@
 import { useEffect, useState, useRef } from "react";
 import { lines } from "./data";
 
+const QUESTION = "Password: Hello World!";
+const CORRECT_ANSWER = "Hello World!"; 
+
 
 function Home() {
   const scrollRef = useRef<HTMLDivElement>(null)
 
-  // ========== 动画参数 ==========
-  const typingSpeed = 50; // 打字速度
-  const cursorBlinkSpeed = 500; // 光标闪烁间隔
-  const finalPauseBeforeFading = 1500; // 全部行打印完后的等待时间
-  const fadeInterval = 10; // 淡出时，每隔多少毫秒让下一个字符开始淡出
-  const fadeDuration = 2000; // 从不透明到透明的过渡时长
+  // ========== Animation Parameters ==========
+  const typingSpeed = 50; // Typing speed
+  const cursorBlinkSpeed = 500; // Cursor blink interval
+  const finalPauseBeforeFading = 1500; // Waiting time after all lines are printed
+  const fadeInterval = 10; // Interval between each character fading out
+  const fadeDuration = 2000; // Transition duration from opaque to transparent
 
-  // ========== React 状态 ==========
+
   const [currentLine, setCurrentLine] = useState(0);
   const [typedIndex, setTypedIndex] = useState(0);
   const [linesDisplay, setLinesDisplay] = useState<string[]>([]);
   const [phase, setPhase] = useState<"typing" | "waiting" | "fading" | "done">("typing");
 
-  // 淡出相关状态
+  // fade out state
   const [fadeOutIndex, setFadeOutIndex] = useState(0);
   const [removedChars, setRemovedChars] = useState<string[]>([]);
 
-  // 光标闪烁状态
   const [showCursor, setShowCursor] = useState(true);
 
   useEffect(() => {
@@ -42,7 +44,7 @@ function Home() {
   };
 
   // ------------------------------
-  // 让光标每隔 cursorBlinkSpeed 毫秒闪烁
+  // let cursor blink
   useEffect(() => {
     const cursorTimer = setInterval(() => {
       setShowCursor((prev) => !prev);
@@ -51,7 +53,7 @@ function Home() {
   }, []);
 
   // ------------------------------
-  // 当文本更新时自动滚动到底部
+  // scroll to bottom when new line added
   useEffect(() => {
     if (phase !== "done" && phase !== "fading" && scrollRef.current) {
     if (scrollRef.current) {
@@ -64,7 +66,7 @@ function Home() {
   }, [linesDisplay, typedIndex, fadeOutIndex,phase]);
 
   // ------------------------------
-  // 逐行打字逻辑
+  // typing logic
   useEffect(() => {
     if (phase === "typing") {
       if (currentLine < lines.length) {
@@ -75,14 +77,14 @@ function Home() {
           }, typingSpeed);
           return () => clearTimeout(timer);
         } else {
-          // 当前行打字完成
+          // current line is fully typed
           const fullLine = currentLineText;
           setLinesDisplay((prev) => [...prev, fullLine]);
 
-          // 等待该行的 pause 毫秒后，开始下一行
+          // wait for pause duration
           const timer = setTimeout(() => {
             setCurrentLine((prev) => prev + 1);
-            setTypedIndex(0); // 重置 typedIndex
+            setTypedIndex(0); // reset typedIndex
           }, lines[currentLine].pause);
           return () => clearTimeout(timer);
         }
@@ -93,7 +95,7 @@ function Home() {
   }, [phase, currentLine, typedIndex, lines]);
 
   // ------------------------------
-  // 等待后进入 fading 阶段
+  // fading after all lines are printed
   useEffect(() => {
     if (phase === "waiting") {
       const timer = setTimeout(() => {
@@ -104,13 +106,13 @@ function Home() {
   }, [phase, finalPauseBeforeFading]);
 
   // ------------------------------
-  // 计算“当前行未完成”的部分文本（用于 typing 阶段显示，并带光标）
+  // calculate the current line with typing effect
   const getCurrentLinePartial = () => {
     if (phase === "typing") {
       if (currentLine < lines.length) {
         const text = lines[currentLine].text;
         if (typedIndex >= text.length) {
-          return ""; // 当前行已完成，则光标将出现在下一行
+          return ""; // fully typed this line, cursor should be at the next line
         }
         return text.slice(0, typedIndex) + (showCursor ? "_" : "");
       } else {
@@ -121,7 +123,7 @@ function Home() {
   };
 
   // ------------------------------
-  // 当进入 fading 阶段时，将所有文本拼接成字符数组，用于逐个淡出
+  // combine all lines and current line with typing effect
   const combinedTextArray = [
     ...linesDisplay.map((line) => line + "\n"),
     getCurrentLinePartial(),
@@ -130,7 +132,7 @@ function Home() {
     .split("");
 
   // ------------------------------
-  // 淡出逻辑：依次增加 fadeOutIndex，从而触发字符的淡出
+  // fading out effect
   useEffect(() => {
     if (phase === "fading") {
       if (fadeOutIndex < combinedTextArray.length) {
@@ -146,7 +148,7 @@ function Home() {
   }, [phase, fadeOutIndex, combinedTextArray.length, fadeInterval]);
 
   // ------------------------------
-  // 在字符达到淡出动画的时间后，从 DOM 中移除（标记为 removed）
+  // fading out effect: remove characters
   useEffect(() => {
     if (phase === "fading" && fadeOutIndex > 0) {
       const indexToFade = fadeOutIndex - 1;
@@ -157,8 +159,7 @@ function Home() {
     }
   }, [phase, fadeOutIndex, fadeDuration]);
 
-  // ------------------------------
-  // 渲染部分：根据不同阶段渲染不同效果
+
   return (
     <div className="min-h-screen bg-black p-8">
       {
@@ -173,7 +174,7 @@ function Home() {
           }}
         >
           {(phase === "fading") ? (
-            // fading 阶段：逐个字符淡出
+            // fading phase: show all text with fading out effect
             combinedTextArray.map((char, i) => {
               if (char === "\n") return <br key={i} />;
               if (removedChars.includes(String(i))) return null;
@@ -192,7 +193,7 @@ function Home() {
               );
             })
           ) : (
-            // typing/waiting 阶段：按行显示文本，并显示当前行的打字效果
+            // typing/waiting phase: show current line with typing effect
             [...linesDisplay, getCurrentLinePartial() || (showCursor ? "_" : " ")].map((line, index) => (
               <div key={index}>{line}</div>
             ))
@@ -214,22 +215,19 @@ function Home() {
 
 
 
-const QUESTION = "你的高中名字?";
-const CORRECT_ANSWER = "荆州中学"; 
-
 export default function App() {
   const [userInput, setUserInput] = useState("");
 
-  // 监听输入变化，自动验证
+  // deal with user input
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.trim().toLowerCase(); // 去除空格 & 统一小写
     setUserInput(value);
   };
 
-  // 验证答案是否正确
+  // verify user input
   const isAuthenticated = userInput === CORRECT_ANSWER.toLowerCase();
 
-  // 如果验证成功，显示 Home 组件
+  // if user input is correct, show the home page
   if (isAuthenticated) {
     return <Home />;
   }
@@ -241,9 +239,9 @@ export default function App() {
         <input
           type="text"
           className="w-full p-2 text-black rounded-md"
-          placeholder="请输入验证答案"
+          placeholder="input answer"
           value={userInput}
-          onChange={handleInputChange} // 监听用户输入
+          onChange={handleInputChange} 
         />
       </div>
     </div>
