@@ -30,5 +30,11 @@ export const lines: LineInfo[] = [
     { text: "For the memories, for the laughter, for everything.", pause: 2000 },
     { text: "I hope you’re happy. I hope you’re doing well.", pause: 2000 },
     { text: "And if you ever feel like reminiscing, I’ll be here, remembering too.", pause: 2500 },
-    { text: "Take care.", pause: 2000 }
+    { text: "The letter is almost coming to an end here.", pause: 1800 },
+    { text: "You often tell me that what is remembered will eventually echo.", pause: 1500 },
+    { text: "So now, please close your eyes and make a wish", pause: 1300 },
+    { text: "Because this letter will bring luck to those who see it, just like a shooting star,", pause: 5300 },
+    { text: "and it will vanish into the vast, boundless world just like a shooting star.", pause: 1800 },
+    { text: "In the new year, may all your wishes come true.", pause: 3800 },
+
 ];
